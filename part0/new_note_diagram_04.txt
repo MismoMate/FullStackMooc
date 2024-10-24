@@ -1,0 +1,21 @@
+
+Browser>>Server: Post https://studies.cs.helsinki.fi/exampleapp/new_note
+Server>>browser: status code 302 redirect 
+
+server adds new note and adds it to an array called notes, server side.
+
+Browser>>Server: Get https://studies.cs.helsinki.fi/exampleapp/notes
+Server>>Browser: HTML document
+
+Browser>>Server: Get https://studies.cs.helsinki.fi/exampleapp/main.css
+Server>>Browser: main.css Style sheet
+
+Browser>>Server: Get https://studies.cs.helsinki.fi/exampleapp/main.js
+Server>>Browser: main.js The js file
+
+Browser starts exe js file 
+
+Browser>>Server: Get https://studies.cs.helsinki.fi/exampleapp/data.json
+Server>>Browser: data.json json file with notes.
+
+Browser executes main.js to create ul and li's in the dom with data.json.

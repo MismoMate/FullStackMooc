@@ -1,0 +1,10 @@
+sequenceDiagram
+    participant browser
+    participant server
+    
+    Note: onclick event executes javascript junction to send POST
+    browser->>server POST: https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+    activate server
+    server->>browser: content-type: application/json; name new_note_spa
+
+    note: javascript renders new notes json to screen.

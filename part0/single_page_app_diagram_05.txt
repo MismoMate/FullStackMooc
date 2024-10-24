@@ -1,0 +1,25 @@
+sequence diagram
+    participant browser
+    participant server
+
+    browser->>server: Get https://studies.cs.helsinki.fi/exampleapp/spa
+    activate server
+    server->>browser: content type: text/html; name: spa
+    deactivate server
+
+    browser->>server: Get https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server
+    server->>browser: content type: text/css; name: main.css
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+    activate server
+    server->>browser: content type: application/javascript; name: spa.js
+
+    Note the server: starts to execute the code to fetch the json data
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server
+    server->>browser: content type: application/json; name: data.json
+
+    The browser renders the json data to the dom as ul and li's 
