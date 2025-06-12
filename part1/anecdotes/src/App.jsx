@@ -13,27 +13,38 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+  const [votes, updateVotes] = useState(new Array(8).fill(0))
+
+  console.log(votes)
 
   const randAnecdote = () => {
     const rand = Math.floor(Math.random() * anecdotes.length)
     console.log(rand)
     setSelected(rand)
-  }  
+  }
+
+  const increaseVote = () => {
+    const copy = [...votes]
+    copy[selected] += 1
+    updateVotes(copy)
+  }
 
   return (
     <div>
-      <Anecdote header="Anecdote of the day" text={`${anecdotes[selected]}`} />
+      <Anecdote header="Anecdote of the day" text={`${anecdotes[selected]}`} votes={votes[selected]} />
+      <Button onClick={increaseVote} text="vote" />
       <Button onClick={randAnecdote} text='next anecdote'/>
+      <TopAnecdote anecdotes={anecdotes} votes={votes}/>
     </div>
   )
 }
 
-const Anecdote = ({header, text}) => {
+const Anecdote = ({header, text, votes}) => {
   console.log(text)
   return (
     <>
       <h1>{header}</h1>
-      <p>{text}</p>
+      <p>{text}<br />has {votes} votes</p>
     </>
   )
 }
@@ -43,6 +54,26 @@ const Button = (props) => {
   return (
     <>
       <button onClick={props.onClick}>{props.text}</button>
+    </>
+  )
+}
+
+const TopAnecdote = ({anecdotes, votes}) => {
+  let winnersPos = 0
+  for (let i = 0; i < votes.length; i++) {
+    if (votes[i] > votes[winnersPos]) {
+      winnersPos = i
+    }
+  }
+  if (votes[winnersPos] === 0) {
+    return (
+      <></>
+    )
+  }
+  
+  return (
+    <>
+      <Anecdote header="Anecdote with most votes" text={`${anecdotes[winnersPos]}`} votes={votes[winnersPos]} />
     </>
   )
 }
