@@ -10,6 +10,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchField, setNewSearchValue] = useState('')
+  const [match, setMatch] = useState(false)
+
 
   const handleNameChange = (event) => setNewName(event.target.value)
 
@@ -27,15 +29,32 @@ const App = () => {
     }    
   }
 
-  const searchPhonebook = (event) => {
-    setNewSearchValue(event.target.value)
-    // add functionality that matches 
+  const handleSearch = (event) => {
+    const value = event.target.value.toLowerCase()
+    setMatch(false)
+    setNewSearchValue(value)
+    // add functionality that matches
+    persons.map(person => {
+      if (person.name.toLowerCase().includes(value) && value !== '') {
+        setMatch(true)
+        return     
+      } 
+    })   
   }
 
   return (
     <div>
       <h1>Phonebook</h1>
-      <p>Search phonebook <input value={searchField} onChange={searchPhonebook} /></p>      
+      <p>Search phonebook <input value={searchField} onChange={handleSearch} /></p>      
+      <div>
+        {
+          !match ? <p>No search results</p> : persons.map(person => {
+            if (person.name.toLowerCase().includes(searchField.toLowerCase())) {              
+              return <Entry key={person.id} name={person.name} number={person.number} />
+            }
+          })
+        }
+      </div>
       <h2>Add Entries</h2>
       <form onSubmit={addPerson} >
         <div>
