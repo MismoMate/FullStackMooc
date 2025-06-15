@@ -2,25 +2,79 @@ import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
-  ]) 
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
+  ])
   const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [searchField, setNewSearchValue] = useState('')
+
+  const handleNameChange = (event) => setNewName(event.target.value)
+
+  const handleNumberChange = (event) => setNewNumber(event.target.value)
+
+  const addPerson = (event) => {
+    event.preventDefault()   
+    const duplicate = persons.some(person => person.name.toLowerCase() === newName.toLowerCase())
+    if (!duplicate) {
+      setPersons(persons.concat({name: newName, number: newNumber}))
+      setNewName('')
+      setNewNumber('')
+    } else {
+      alert(`${newName} is already added to phonebook`)
+    }    
+  }
+
+  const searchPhonebook = (event) => {
+    setNewSearchValue(event.target.value)
+    // add functionality that matches 
+  }
 
   return (
     <div>
-      <h2>Phonebook</h2>
-      <form>
+      <h1>Phonebook</h1>
+      <p>Search phonebook <input value={searchField} onChange={searchPhonebook} /></p>      
+      <h2>Add Entries</h2>
+      <form onSubmit={addPerson} >
         <div>
-          name: <input />
+          name: 
+          <input
+            value={newName}
+            onChange={handleNameChange}          
+          />          
+        </div>
+        <div>
+          number: 
+          <input 
+            value={newNumber}
+            onChange={handleNumberChange}
+          />
         </div>
         <div>
           <button type="submit">add</button>
         </div>
       </form>
       <div>debug: {newName}</div>
+      <div>debug: {newNumber}</div>
+      <div>debug: {searchField}</div>
       <h2>Numbers</h2>
-      ...
+      <div>
+        {
+          persons.map(
+            person =>
+              <Entry key={person.id} name={person.name} number={person.number} />
+          )
+        }
+      </div>      
     </div>
+  )
+}
+
+const Entry = ({name, number}) => {
+  return (
+    <p>{name} {number}</p>
   )
 }
 
