@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -21,7 +24,7 @@ const App = () => {
     event.preventDefault()   
     const duplicate = persons.some(person => person.name.toLowerCase() === newName.toLowerCase())
     if (!duplicate) {
-      setPersons(persons.concat({name: newName, number: newNumber}))
+      setPersons(persons.concat({name: newName, number: newNumber, id: persons.length + 1}))
       setNewName('')
       setNewNumber('')
     } else {
@@ -39,62 +42,25 @@ const App = () => {
         setMatch(true)
         return     
       } 
-    })   
+    })
   }
 
   return (
     <div>
       <h1>Phonebook</h1>
-      <p>Search phonebook <input value={searchField} onChange={handleSearch} /></p>      
-      <div>
-        {
-          !match ? <p>No search results</p> : persons.map(person => {
-            if (person.name.toLowerCase().includes(searchField.toLowerCase())) {              
-              return <Entry key={person.id} name={person.name} number={person.number} />
-            }
-          })
-        }
-      </div>
-      <h2>Add Entries</h2>
-      <form onSubmit={addPerson} >
-        <div>
-          name: 
-          <input
-            value={newName}
-            onChange={handleNameChange}          
-          />          
-        </div>
-        <div>
-          number: 
-          <input 
-            value={newNumber}
-            onChange={handleNumberChange}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <div>debug: {newName}</div>
-      <div>debug: {newNumber}</div>
-      <div>debug: {searchField}</div>
+      <Filter text='Search Phonebook' inputValue={searchField} onChange={handleSearch} phonebook={persons} match={match} />
+      
+      <h2>Add a new entry</h2>
+      <PersonForm onSubmit={addPerson} nameValue={newName} onNameChange={handleNameChange} 
+                  numberValue={newNumber} onNumberChange={handleNumberChange}
+      />
+      
       <h2>Numbers</h2>
-      <div>
-        {
-          persons.map(
-            person =>
-              <Entry key={person.id} name={person.name} number={person.number} />
-          )
-        }
-      </div>      
+      <Persons persons={persons} /> 
+              
     </div>
   )
 }
 
-const Entry = ({name, number}) => {
-  return (
-    <p>{name} {number}</p>
-  )
-}
 
 export default App
