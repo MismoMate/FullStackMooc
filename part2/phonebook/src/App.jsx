@@ -28,20 +28,42 @@ const App = () => {
   const handleNumberChange = (event) => setNewNumber(event.target.value)
 
   const addPerson = (event) => {
-    event.preventDefault()   
+    event.preventDefault() 
+    if (newName === "") {
+      return
+    }  
+    console.log(persons)
     const duplicate = persons.some(person => person.name.toLowerCase() === newName.toLowerCase())
+    console.log(duplicate)
     if (!duplicate) {
       let newObject = {name: newName, number: newNumber}
       phonebookService
         .create(newObject)
-        .then(returnObject => {
-            setPersons(persons.concat(returnObject))
-            setNewName('')
-            setNewNumber('')
+        .then(createdEntry => {
+            setPersons(persons.concat(createdEntry))
         })
-    } else {
-      alert(`${newName} is already added to phonebook`)
-    }    
+    } else { 
+      let person 
+      persons.forEach(p => {
+        if (p.name.toLowerCase() === newName.toLowerCase()) {
+          person = p
+        }
+      })
+      console.log(person)
+      if (person.number !== newNumber) {  
+        if (window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`)) {
+          phonebookService
+            .update(person.id, { name: person.name, number: newNumber })
+            .then(response =>
+              setPersons(persons.filter(p => p.id != person.id).concat(response))
+            )
+        }
+      } else {
+        alert(`${newName} at ${newNumber} is already in your phonebook`)
+      }
+    }  
+    setNewName('')
+    setNewNumber('')  
   }
 
   const handleSearch = (event) => {    
@@ -62,7 +84,7 @@ const App = () => {
     phonebookService
         .deleteEntry(id)
         .then(response => {
-          setPersons(persons.filter(person => person.id != id))
+          setPersons(persons.filter(person => person.id != response.id))
         })
         .catch(() => {
           alert(`the note ${id} was deleted`)
