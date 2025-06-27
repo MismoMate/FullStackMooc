@@ -1,10 +1,4 @@
 
-const Entry = ({name, number}) => {
-  return (
-    <p>{name} {number}</p>
-  )
-}
-
 const Filter = (props) => {
 
     return (
@@ -22,6 +16,16 @@ const Filter = (props) => {
     </div>
     )
 }
+
+const Entry = (props) => {
+
+    return (
+        <>
+            <p>{props.name} {props.number}</p>
+        </>
+    )
+}
+
 
 
 export default Filter
