@@ -3,6 +3,7 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import phonebookService from './services/entries'
+import Notification from './components/Notification'
 
 const App = () => {
   
@@ -12,6 +13,9 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [searchField, setNewSearchValue] = useState('')
   const [match, setMatch] = useState(false)
+  const [not, setNot] = useState(null)
+  const [isError, setError] = useState(false)
+  
 
   useEffect(() => {
     console.log('effect')
@@ -41,6 +45,11 @@ const App = () => {
         .create(newObject)
         .then(createdEntry => {
             setPersons(persons.concat(createdEntry))
+            setError(false)
+            setNot(`Added ${newObject.name}`)
+            setTimeout(() => {
+              setNot(null)
+            }, 5000)
         })
     } else { 
       let person 
@@ -54,9 +63,19 @@ const App = () => {
         if (window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`)) {
           phonebookService
             .update(person.id, { name: person.name, number: newNumber })
-            .then(response =>
+            .then(response => {
+              setError(false)
               setPersons(persons.filter(p => p.id != person.id).concat(response))
-            )
+              setNot(`${response.name} has been changed to ${response.number}`)
+              setTimeout(() => {
+                setNot(null)
+              }, 5000)
+            })
+            .catch(() => {
+              setNot(`Information of ${newName} has already been removed from server`)
+              setError(true)
+              setTimeout(() => setNot(null), 5000)
+            })
         }
       } else {
         alert(`${newName} at ${newNumber} is already in your phonebook`)
@@ -94,6 +113,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={not} isError={isError} />
       <Filter text='Search Phonebook' inputValue={searchField} onChange={handleSearch} phonebook={persons} match={match} />
       
       <h2>Add a new entry</h2>
