@@ -26,10 +26,73 @@ let persons = [
     }
 ]
 
+app.get('/', (req, res) => {
+  res.send("<h1>Phonebook</h1>")
+})
+
 
 app.get('/api/persons', (req, res) => {
     res.json(persons)
 })
+
+app.get('/api/info', (req, res) => {
+    const date = Date.now()    
+    res.send(`<h2>Phonebook has info for ${persons.length} people</h2>\n<h2>${new Date(date).toString()}</h2> `)
+})
+
+app.get('/api/persons/:id', (req, res) => {
+    const id = req.params.id
+    console.log(id)
+    const person = persons.find(person => person.id === id)
+
+    if (person) {
+      res.json(person)
+    } else {
+      res.status(404).end()
+    }
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+    const id = req.params.id    
+    const personIndex = persons.findIndex(person => person.id === id)
+
+    if (personIndex >= 0) {
+      console.log(persons)
+      res.json(persons[personIndex])
+      persons.splice(personIndex, 1)
+      console.log(persons)
+    } else {
+      res.status(404).end()
+    }
+})
+
+app.post('/api/persons', (req, res) => {
+    const createId = () => {
+      const max = 10000
+      const min = 0
+      return Math.floor(Math.random() * (max - min + 1) ) + min
+    }
+
+    const person = req.body
+    if (!('name' in person) || !("number" in person) ) {
+      res.status(400).json(person)
+      return 
+    }
+    const isDuplicate = persons.find(p => p.name.toLowerCase() === person.name.toLowerCase())
+
+    if (isDuplicate) {      
+      console.log('duplicate')
+      res.status(409).json({ error: 'name must be unique' })
+    }else {
+      console.log(createId(), 'creating entry...')
+      person.id = createId()
+      persons.push(person)
+      console.log(person, "has been added.\n", persons)
+      res.json(person)
+    }
+})
+
+
 
 
 const PORT = 3001
