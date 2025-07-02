@@ -1,7 +1,27 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
 app.use(express.json())
+
+morgan.token('tinyDinger', (tokens, req, res) => {
+  let log = [
+    tokens.method(req, res),
+    tokens.url(req, res),
+    tokens.status(req, res),
+    tokens.res(req, res, 'content-length'), '-', 
+    tokens['response-time'](req, res), 'ms'
+  ].join(' ')
+
+  if (req.method === 'POST') {
+    log += " " + JSON.stringify(req.body)
+  }
+
+  return log
+})
+
+app.use(morgan('tinyDinger'))
+app.use(morgan("tiny"))
 
 let persons = [
     { 
@@ -75,7 +95,7 @@ app.post('/api/persons', (req, res) => {
 
     const person = req.body
     if (!('name' in person) || !("number" in person) ) {
-      res.status(400).json(person)
+      res.status(400).json({ error: 'Either a name, number, or both fields are missing' })
       return 
     }
     const isDuplicate = persons.find(p => p.name.toLowerCase() === person.name.toLowerCase())
