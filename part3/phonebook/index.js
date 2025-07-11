@@ -137,6 +137,7 @@ const errorHandler = (err, req, res, next) => {
 
 app.use(errorHandler)
 
+// still have to test exerices 3.15-18 
 
 const PORT = process.env.PORT
 app.listen(PORT, () => console.log(`server is running on port ${PORT}...` ) )
