@@ -67,10 +67,13 @@ app.get('/api/info', (req, res, next) => {
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
-    
-  Person.findById(request.params.id)
+  console.log(req.params.id, res.body)
+
+  Person.findById(req.params.id)
     .then(person => {
+      console.log(person)
       if (person) {
+        
         res.json(person)
       } else {
         res.status(404).end()
