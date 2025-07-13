@@ -51,6 +51,14 @@ const App = () => {
               setNot(null)
             }, 5000)
         })
+        .catch(error => {
+          console.log(error.response.data.error)
+          setError(true)          
+          setNot(`Error: ${error.response.data.error}`)
+          setTimeout(() => {
+            setNot(null)
+          }, 5000)
+        })
     } else { 
       let person 
       persons.forEach(p => {
